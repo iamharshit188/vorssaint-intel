@@ -33,6 +33,11 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [ "$(gh api "repos/$GH_REPO" --jq '.has_issues')" != "true" ]; then
+            echo "Repository issues are disabled; skipping failure reporting."
+            exit 0
+          fi
+
           TITLE="CI failure: $WORKFLOW on $BRANCH"
 
           gh label create ci-failure --color B60205 \
@@ -78,6 +83,11 @@ jobs:
           RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           set -euo pipefail
+
+          if [ "$(gh api "repos/$GH_REPO" --jq '.has_issues')" != "true" ]; then
+            echo "Repository issues are disabled; skipping issue closure."
+            exit 0
+          fi
 
           TITLE="CI failure: $WORKFLOW on $BRANCH"
 
